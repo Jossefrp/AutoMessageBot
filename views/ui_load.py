@@ -52,9 +52,17 @@ class Ui_LoadWindow(object):
         self.pushButton.setEnabled(True)
         self.pushButton.setGeometry(QRect(365, 315, 230, 50))
         self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet(u"background-color: rgb(79, 117, 255);\n"
+        self.pushButton.setStyleSheet(u"QPushButton{\n"
+"background-color: rgb(79, 117, 255);\n"
 "color: rgb(255, 255, 255);\n"
-"border-radius: 20px;")
+"border-radius: 20px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"	background-color: rgb(75, 153, 255);\n"
+"}\n"
+"QPushButton:pressed{\n"
+"background-color: rgb(79, 117, 255);\n"
+"}")
         self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setGeometry(QRect(420, 195, 120, 75))

@@ -110,9 +110,17 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(79, 117, 255);
+      <string notr="true">QPushButton{
+background-color: rgb(79, 117, 255);
 color: rgb(255, 255, 255);
-border-radius: 20px;</string>
+border-radius: 20px;
+}
+QPushButton:hover{
+	background-color: rgb(75, 153, 255);
+}
+QPushButton:pressed{
+background-color: rgb(79, 117, 255);
+}</string>
      </property>
      <property name="text">
       <string>Subir archivo</string>
