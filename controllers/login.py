@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 from views.ui_login import Ui_LoginWindow
-from controllers.load_window import LoadWindow
+from controllers.load import LoadWindow
 from utils import center_window, logger
 import webbrowser
 
