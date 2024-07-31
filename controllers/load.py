@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from views.ui_load import Ui_LoadWindow
+from controllers.main import MainWindow
 from utils import center_window, logger
 
 
@@ -20,8 +21,13 @@ class LoadWindow(QMainWindow):
         )
         if file_name:
             logger.debug(file_name)
+            self.next_page()
         else:
             logger.info("No se ha cargado un archivo") 
 
     def next_page(self):
-        pass
+        logger.info("Abriendo la ventana principal")
+        self.main_window = MainWindow()
+        self.main_window.show()
+        self.hide()
+        

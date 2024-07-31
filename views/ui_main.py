@@ -124,8 +124,7 @@ class Ui_MainWindow(object):
         self.message_text.setObjectName(u"message_text")
         self.message_text.setGeometry(QRect(65, 100, 830, 64))
         self.message_text.setAutoFillBackground(True)
-        self.message_text.setStyleSheet(u"resize:none;\n"
-                                        "color: black;\n"
+        self.message_text.setStyleSheet(u"color: black;\n"
                                         "background-color: rgb(217, 217, 217);")
         self.message_text.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.message_text.setTabChangesFocus(False)
@@ -258,8 +257,7 @@ class Ui_MainWindow(object):
         self.message_text_2.setObjectName(u"message_text_2")
         self.message_text_2.setGeometry(QRect(65, 100, 830, 64))
         self.message_text_2.setAutoFillBackground(True)
-        self.message_text_2.setStyleSheet(u"resize:none;\n"
-                                          "color: black;\n"
+        self.message_text_2.setStyleSheet(u"color: black;\n"
                                           "background-color: rgb(217, 217, 217);")
         self.message_text_2.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.message_text_2.setTabChangesFocus(False)
