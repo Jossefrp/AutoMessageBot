@@ -154,6 +154,7 @@ class Ui_MainWindow(object):
                                        "	background-color: rgb(255, 255, 255);\n"
                                        "gridline-color: rgb(0,206,151);\n"
                                        "font-size: 12px;\n"
+                                       "color: black;\n"
                                        "}\n"
                                        "QHeaderView::section{\n"
                                        "	background-color: rgb(46, 112, 255);\n"
