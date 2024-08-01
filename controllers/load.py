@@ -21,13 +21,13 @@ class LoadWindow(QMainWindow):
         )
         if file_name:
             logger.debug(file_name)
-            self.next_page()
+            self.next_page(file_name)
         else:
             logger.info("No se ha cargado un archivo") 
 
-    def next_page(self):
+    def next_page(self, file):
         logger.info("Abriendo la ventana principal")
-        self.main_window = MainWindow()
+        self.main_window = MainWindow(file)
         self.main_window.show()
         self.hide()
         

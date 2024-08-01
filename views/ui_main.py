@@ -59,10 +59,10 @@ class Ui_MainWindow(object):
         self.select_number = QGridLayout(self.gridLayoutWidget)
         self.select_number.setObjectName(u"select_number")
         self.select_number.setContentsMargins(0, 0, 0, 0)
-        self.radioButton = QRadioButton(self.gridLayoutWidget)
-        self.radioButton.setObjectName(u"radioButton")
+        # self.radioButton = QRadioButton(self.gridLayoutWidget)
+        # self.radioButton.setObjectName(u"radioButton")
 
-        self.select_number.addWidget(self.radioButton, 0, 0, 1, 1)
+        # self.select_number.addWidget(self.radioButton, 0, 0, 1, 1)
 
         self.label_9 = QLabel(self.select_column)
         self.label_9.setObjectName(u"label_9")
@@ -80,10 +80,6 @@ class Ui_MainWindow(object):
         self.select_columns = QGridLayout(self.gridLayoutWidget_3)
         self.select_columns.setObjectName(u"select_columns")
         self.select_columns.setContentsMargins(0, 0, 0, 0)
-        self.checkBox = QCheckBox(self.gridLayoutWidget_3)
-        self.checkBox.setObjectName(u"checkBox")
-
-        self.select_columns.addWidget(self.checkBox, 0, 0, 1, 1)
 
         self.start_button_3 = QPushButton(self.select_column)
         self.start_button_3.setObjectName(u"start_button_3")
@@ -414,12 +410,8 @@ class Ui_MainWindow(object):
             "MainWindow", u"MainWindow", None))
         self.label_2.setText(QCoreApplication.translate(
             "MainWindow", u"<html><head><body><p><span style=\" font-size:18pt; color:#ffffff;\">Elija la columna en la que se encuentran los n\u00fameros de tel\u00e9fono</span></p></body></html>", None))
-        self.radioButton.setText(QCoreApplication.translate(
-            "MainWindow", u"RadioButton", None))
         self.label_9.setText(QCoreApplication.translate(
             "MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#ffffff;\">Elija las columnas que ser\u00e1n visibles en la pr\u00f3xima tabla</span></p></body></html>", None))
-        self.checkBox.setText(QCoreApplication.translate(
-            "MainWindow", u"CheckBox", None))
         self.start_button_3.setText(
             QCoreApplication.translate("MainWindow", u"Continuar", None))
         self.label.setText(QCoreApplication.translate(
