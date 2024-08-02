@@ -1,15 +1,20 @@
-from PySide6.QtWidgets import (QMainWindow, QWidget, QRadioButton, QGroupBox, 
-                               QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem)
 from PySide6.QtCore import Qt
-from views.ui_main import Ui_MainWindow
-from utils import center_window, logger
+from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
+                               QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem)
+
 from models.file_upload import FileExcel
+from utils import center_window, logger
+from views.ui_main import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, file) -> None:
+    def __init__(self, file: str) -> None:
+        """Ventana principal
+        Args:
+            file(str): Nombre del archivo
+        """
         super(MainWindow, self).__init__()
-        self.db = FileExcel(file) 
+        self.db = FileExcel(file)
         self.value_headers = dict()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -18,17 +23,19 @@ class MainWindow(QMainWindow):
         center_window(self)
 
     def select_column(self):
+        """Pestaña para seleccionar las columnas del archivo excel"""
         box_select_numbers = QGroupBox()
         box_select_header = QGroupBox()
-        box_select_header.setFlat(True)
         grid_box_numbers = QGridLayout()
         grid_box_headers = QGridLayout()
         col = 0
         for header in self.db.columns.items():
+            #: header[0] valor de la celda
             radio_button = QRadioButton(header[0], box_select_numbers)
             checked_button = QCheckBox(header[0], box_select_header)
-            grid_box_numbers.addWidget(radio_button, (header[1]-1) % 4, col)
-            grid_box_headers.addWidget(checked_button, (header[1]-1) % 4, col)
+            #: header[1] posición en donde esta la celda
+            grid_box_numbers.addWidget(radio_button, (header[1] - 1) % 4, col)
+            grid_box_headers.addWidget(checked_button, (header[1] - 1) % 4, col)
             col = col + 1 if header[1] % 4 == 0 else col
         box_select_numbers.setLayout(grid_box_numbers)
         box_select_header.setLayout(grid_box_headers)
@@ -40,6 +47,7 @@ class MainWindow(QMainWindow):
         )
 
     def box_verification(self, box1: QGroupBox, box2: QGroupBox):
+        """Caja de botones que iran en la pestaña para seleccionar columnas"""
         column_number = None
         for button in box1.findChildren(QRadioButton):
             if button.isChecked():
@@ -59,6 +67,7 @@ class MainWindow(QMainWindow):
             print("No selection")
 
     def main_widget(self):
+        """Pestaña principal"""
         logger.info("main widget loading")
         logger.debug(f"Columnas: {self.value_headers.keys()}")
         self.ui.stackedWidget.setCurrentWidget(self.ui.main)
@@ -71,7 +80,7 @@ class MainWindow(QMainWindow):
         for col, columns in enumerate(self.value_headers.values()):
             for row, value in enumerate(columns):
                 if isinstance(value, (float, int)):
-                    value = int(value) 
+                    value = int(value)
                 item = QTableWidgetItem(str(value))
                 item.setTextAlignment(Qt.AlignCenter)
                 self.ui.tableWidget.setItem(row, col, item)

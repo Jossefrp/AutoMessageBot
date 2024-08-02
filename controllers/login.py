@@ -1,22 +1,23 @@
 from PySide6.QtWidgets import QMainWindow, QMessageBox
-from views.ui_login import Ui_LoginWindow
+
 from controllers.load import LoadWindow
-from utils import center_window, logger
-import webbrowser
+from utils import center_window, logger, open_browser
+from views.ui_login import Ui_LoginWindow
 
 
 class MainWindowForm(QMainWindow):
     def __init__(self) -> None:
         super(MainWindowForm, self).__init__()
+        self.load_window = None
         self.ui = Ui_LoginWindow()
         self.ui.setupUi(self)
         self.ui.info_button.clicked.connect(self.info_window)
         self.ui.linkd_button.clicked.connect(
-            lambda: self.open_browser(
+            lambda: open_browser(
                 url="https://www.linkedin.com/in/jossef-ramos/")
         )
         self.ui.github_button.clicked.connect(
-            lambda: self.open_browser("https://github.com/Jossefrp")
+            lambda: open_browser("https://github.com/Jossefrp")
         )
         self.ui.start_button.clicked.connect(self.next_page)
         center_window(self)
@@ -31,10 +32,6 @@ class MainWindowForm(QMainWindow):
         button = dlg.exec()
         if button == QMessageBox.Ok:
             logger.info("Información mostrada")
-
-    def open_browser(self, url: str) -> None:
-        logger.info(f"Abriendo el navegador con URL: {url}")
-        webbrowser.open_new_tab(url)
 
     def next_page(self) -> None:
         logger.info("Abriendo ventana LoadWindow")
