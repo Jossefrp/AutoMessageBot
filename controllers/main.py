@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
-                               QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem)
+                               QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem, QMessageBox)
 
 from models.file_upload import FileExcel
 from utils import center_window, logger
@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
             #: header[0] valor de la celda
             radio_button = QRadioButton(header[0], box_select_numbers)
             checked_button = QCheckBox(header[0], box_select_header)
-            #: header[1] posición en donde esta la celda
+            #: header[1] posición en donde está la celda
             grid_box_numbers.addWidget(radio_button, (header[1] - 1) % 4, col)
             grid_box_headers.addWidget(checked_button, (header[1] - 1) % 4, col)
             col = col + 1 if header[1] % 4 == 0 else col
@@ -63,8 +63,14 @@ class MainWindow(QMainWindow):
                 values = self.db.get_values(i)
                 self.value_headers.update({i: values})
             self.main_widget()
-        else:
-            print("No selection")
+
+        logger.info("No se ha seleccionado los botones")
+        # Definiendo el QMessageBox
+        dlg = QMessageBox(self.ui.select_column)
+        dlg.setWindowTitle("Seleccionar columnas")
+        dlg.setText("Se tiene que seleccionar las opciones")
+        dlg.setIcon(QMessageBox.Warning)
+        dlg.exec()
 
     def main_widget(self):
         """Pestaña principal"""
