@@ -30,10 +30,53 @@ class MainWindow(QMainWindow):
         grid_box_numbers = QGridLayout()
         grid_box_headers = QGridLayout()
         col = 0
+        radio_button_style = """
+            QRadioButton {
+              font-size: 14px;
+              color: white;
+            }
+            QRadioButton::indicator {
+              width: 14px;
+              height: 14px;
+            }
+            QRadioButton::indicator:hover {
+              background-color: #8696a0;
+            }
+            QRadioButton::indicator:checked {
+              width: 6px;
+              height: 6px;
+              border: 5px solid #38b54a;
+              border-radius: 8px;
+              background-color: rgba(0, 0, 0, 0);
+            }
+            QRadioButton::indicator:unchecked {
+              border: 1px solid #cccccc;
+              border-radius: 8px;
+            }
+        """
+        check_box_style = """
+            QCheckBox {
+              font-size: 14px;
+              color: white;
+            }
+            QCheckBox::indicator:hover {
+              background-color: #8696a0;
+            }
+            QCheckBox::indicator:checked {
+              image: url("./assets/icons/main/check.png");
+            }
+            QCheckBox::indicator:unchecked {
+              border: 1px solid #cccccc;
+            }
+        """
         for header in self.db.columns.items():
             #: header[0] valor de la celda
             radio_button = QRadioButton(header[0], box_select_numbers)
             checked_button = QCheckBox(header[0], box_select_header)
+
+            #: Añadiendo estilos
+            radio_button.setStyleSheet(radio_button_style)
+            checked_button.setStyleSheet(check_box_style)
             #: header[1] posición en donde está la celda
             grid_box_numbers.addWidget(radio_button, (header[1] - 1) % 4, col)
             grid_box_headers.addWidget(checked_button, (header[1] - 1) % 4, col)
