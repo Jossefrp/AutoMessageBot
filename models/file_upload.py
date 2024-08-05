@@ -1,3 +1,4 @@
+from utils import logger
 import openpyxl
 
 
@@ -8,9 +9,23 @@ class FileExcel:
         Args:
             file(str): Nombre del archivo
         """
+        self.error = None
 
-        self.ws = openpyxl.load_workbook(file).active
-        self.columns = dict(self.get_headers())
+        try:
+            self.ws = openpyxl.load_workbook(file).active
+        except (FileNotFoundError, PermissionError, openpyxl.utils.exceptions.InvalidFileException) as e:
+            if isinstance(e, FileNotFoundError):
+                self.error = f"No se encuentra el archivo {file}"
+            elif isinstance(e, PermissionError):
+                self.error = f"No se tiene permisos para acceder al siguiente archivo: {file}"
+            elif isinstance(e, openpyxl.utils.exceptions.InvalidFileException):
+                self.error = f"El archivo {file} no es un archivo válido de Excel"
+            logger.error(self.error)
+        except Exception as e:
+            self.error = f"Ocurrió un error inesperado: {e}\nNo se puede abrir el archivo"
+            logger.error(self.error)
+        else:
+            self.columns = dict(self.get_headers())
 
     def get_headers(self) -> list:
         """Obtiene las columnas del archivo

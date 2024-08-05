@@ -8,13 +8,13 @@ from views.ui_main import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, file: str) -> None:
+    def __init__(self, db: FileExcel) -> None:
         """Ventana principal
         Args:
-            file(str): Nombre del archivo
+            db(FileExcel): Archivo excel donde se encuentra la información
         """
         super(MainWindow, self).__init__()
-        self.db = FileExcel(file)
+        self.db = db
         self.value_headers = dict()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
