@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.stackedWidget.setCurrentWidget(self.ui.select_column)
         self.select_column()
+        logger.debug("Ejecutando")
         center_window(self)
 
     def select_column(self):
@@ -48,6 +49,7 @@ class MainWindow(QMainWindow):
 
     def box_verification(self, box1: QGroupBox, box2: QGroupBox):
         """Caja de botones que iran en la pestaña para seleccionar columnas"""
+        logger.info("Verificación de las opciones seleccionadas")
         column_number = None
         for button in box1.findChildren(QRadioButton):
             if button.isChecked():
@@ -63,26 +65,29 @@ class MainWindow(QMainWindow):
                 values = self.db.get_values(i)
                 self.value_headers.update({i: values})
             self.main_widget()
-
-        logger.info("No se ha seleccionado los botones")
-        # Definiendo el QMessageBox
-        dlg = QMessageBox(self.ui.select_column)
-        dlg.setWindowTitle("Seleccionar columnas")
-        dlg.setText("Se tiene que seleccionar las opciones")
-        dlg.setIcon(QMessageBox.Warning)
-        dlg.exec()
+        else:
+            logger.info("No se ha seleccionado los botones")
+            # Definiendo el QMessageBox
+            dlg = QMessageBox(self.ui.select_column)
+            dlg.setWindowTitle("Seleccionar columnas")
+            dlg.setText("Se tiene que seleccionar las opciones")
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
 
     def main_widget(self):
         """Pestaña principal"""
         logger.info("main widget loading")
         logger.debug(f"Columnas: {self.value_headers.keys()}")
         self.ui.stackedWidget.setCurrentWidget(self.ui.main)
+
+        # Configurando las opciones de la tabla
         headers = self.value_headers.keys()
         self.ui.tableWidget.setColumnCount(len(headers))
         self.ui.tableWidget.setHorizontalHeaderLabels(headers)
-
         row_count = self.db.ws.max_row - 1
         self.ui.tableWidget.setRowCount(row_count)
+
+        # Agregando los valores a las celdas de la tabla
         for col, columns in enumerate(self.value_headers.values()):
             for row, value in enumerate(columns):
                 if isinstance(value, (float, int)):
@@ -95,11 +100,12 @@ class MainWindow(QMainWindow):
         header.setSectionResizeMode(QHeaderView.Stretch)
 
         self.ui.start_main_button.clicked.connect(
-            # lambda: self.next_page(self.ui.load_browser)
+            self.load_browser_widget
         )
 
     def load_browser_widget(self):
         logger.info("load browser widget loading")
+        self.ui.stackedWidget.setCurrentWidget(self.ui.load_browser)
 
     def load_qr_widget(self):
         logger.info("load qr widget loading")
