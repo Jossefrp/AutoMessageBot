@@ -1,8 +1,11 @@
+import time
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
                                QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem, QMessageBox)
 
-from models.file_upload import FileExcel
+from models.FileUpload import FileExcel
+from models.Whatsapp import WhatsApp
 from utils import center_window, logger
 from views.ui_main import Ui_MainWindow
 
@@ -14,13 +17,20 @@ class MainWindow(QMainWindow):
             db(FileExcel): Archivo excel donde se encuentra la información
         """
         super(MainWindow, self).__init__()
+        # Propiedades
         self.db = db
         self.value_headers = dict()
+        self.message = None
+        self.phones_header = None
+        self.driver = WhatsApp()
+
+        # Iniciando la ventana
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.stackedWidget.setCurrentWidget(self.ui.select_column)
         self.select_column()
         logger.debug("Ejecutando")
+
         center_window(self)
 
     def select_column(self):
@@ -106,6 +116,7 @@ class MainWindow(QMainWindow):
         if column_number and column_headers:
             for i in column_headers:
                 values = self.db.get_values(i)
+                self.phones_header = column_number
                 self.value_headers.update({i: values})
             self.main_widget()
         else:
@@ -142,21 +153,45 @@ class MainWindow(QMainWindow):
         header = self.ui.tableWidget.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
 
+        # Obteniendo el texto del QTextEdit
         self.ui.start_main_button.clicked.connect(
-            self.load_browser_widget
+            self.get_message
         )
 
+    def get_message(self):
+        """Obtiene le mensaje del QTextEdit para poder enviar."""
+        message = self.ui.message_text.toPlainText()
+        logger.info(message)
+        logger.info(f"Mensaje: {message}")
+        if message.replace(" ", ""):
+            self.message = message
+            self.load_browser_widget()
+        else:
+            # Mensaje de diálogo, si es que no se mandara un texto vació
+            dlg = QMessageBox(self.ui.main)
+            dlg.setWindowTitle("Error")
+            dlg.setText("¡No se ha colocado el mensaje a enviar!")
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
+
     def load_browser_widget(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.load_qr)
         logger.info("load browser widget loading")
-        self.ui.stackedWidget.setCurrentWidget(self.ui.load_browser)
+        self.driver.get_driver()
+        time.sleep(5)
+        self.load_qr_widget()
 
     def load_qr_widget(self):
         logger.info("load qr widget loading")
-        self.ui.start_qr_button.clicked.connect(
-            # lambda: self.next_page(self.ui.load_browser)
-        )
+        self.ui.stackedWidget.setCurrentWidget(self.ui.load_qr)
+        self.ui.start_qr_button.clicked.connect(self.main_run)
 
     def main_run(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.main_run)
+        self.driver.send_message(
+            phones=self.value_headers[self.phones_header],
+            message=self.message
+        )
         logger.info("main run widget loading")
 
     def finish(self):

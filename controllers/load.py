@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
 from controllers.main import MainWindow
-from models.file_upload import FileExcel
+from models.FileUpload import FileExcel
 from utils import center_window, logger
 from views.ui_load import Ui_LoadWindow
 
