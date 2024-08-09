@@ -1,3 +1,4 @@
+import sys
 import time
 
 from PySide6.QtCore import Qt
@@ -5,7 +6,7 @@ from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
                                QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem, QMessageBox)
 
 from models.FileUpload import FileExcel
-from models.Whatsapp import WhatsApp
+from models.WhatsappWorker import WhatsappWorker
 from utils import center_window, logger
 from views.ui_main import Ui_MainWindow
 
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
         self.value_headers = dict()
         self.message = None
         self.phones_header = None
-        self.driver = WhatsApp()
+        self.whatsapp = WhatsappWorker()
 
         # Iniciando la ventana
         self.ui = Ui_MainWindow()
@@ -159,7 +160,7 @@ class MainWindow(QMainWindow):
         )
 
     def get_message(self):
-        """Obtiene le mensaje del QTextEdit para poder enviar."""
+        """Obtiene el mensaje del QTextEdit para poder enviar."""
         message = self.ui.message_text.toPlainText()
         logger.info(message)
         logger.info(f"Mensaje: {message}")
@@ -175,10 +176,18 @@ class MainWindow(QMainWindow):
             dlg.exec()
 
     def load_browser_widget(self):
-        self.ui.stackedWidget.setCurrentWidget(self.ui.load_qr)
+        self.ui.stackedWidget.setCurrentWidget(self.ui.load_browser)
         logger.info("load browser widget loading")
-        self.driver.get_driver()
-        time.sleep(5)
+        self.whatsapp.open_whatsapp()
+        if self.whatsapp.error:
+            dlg = QMessageBox(self.ui.load_browser)
+            dlg.setWindowTitle("Error en el navegador")
+            dlg.setText(self.whatsapp.error)
+            dlg.setIcon(QMessageBox.Critical)
+            dlg.exec()
+            if dlg:
+                sys.exit(1)
+
         self.load_qr_widget()
 
     def load_qr_widget(self):
@@ -188,7 +197,7 @@ class MainWindow(QMainWindow):
 
     def main_run(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.main_run)
-        self.driver.send_message(
+        self.whatsapp.send_message(
             phones=self.value_headers[self.phones_header],
             message=self.message
         )
