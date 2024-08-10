@@ -160,7 +160,7 @@ class Ui_MainWindow(object):
 "	color: rgb(11, 20, 26);\n"
 "}\n"
 "QHeaderView::section{\n"
-"	background-color: rgb(0, 128, 75);\n"
+"	background-color: rgb(0,128,75);\n"
 "border: 1px solid rgb(0,0,0);\n"
 "font-size: 12px;\n"
 "}\n"
@@ -262,6 +262,7 @@ class Ui_MainWindow(object):
 "")
         self.message_text_2.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.message_text_2.setTabChangesFocus(False)
+        self.message_text_2.setReadOnly(True)
         self.stop_button = QPushButton(self.main_run_frame)
         self.stop_button.setObjectName(u"stop_button")
         self.stop_button.setGeometry(QRect(133, 428, 45, 45))
@@ -270,7 +271,7 @@ class Ui_MainWindow(object):
         self.stop_button.setFont(font2)
         self.stop_button.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
         icon = QIcon()
-        icon.addFile(u"../assets/icons/main/boton-detener.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u"./assets/icons/main/boton-detener.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.stop_button.setIcon(icon)
         self.stop_button.setIconSize(QSize(45, 45))
         self.stop_button.setFlat(True)
@@ -339,7 +340,7 @@ class Ui_MainWindow(object):
 "	color: rgb(11, 20, 26);\n"
 "}\n"
 "QHeaderView::section{\n"
-"	background-color: rgb(46, 112, 255);\n"
+"	background-color: rgb(0,128,75);\n"
 "border: 1px solid rgb(0,0,0);\n"
 "font-size: 12px;\n"
 "}\n"
@@ -403,7 +404,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -425,10 +426,13 @@ class Ui_MainWindow(object):
         self.start_qr_button.setText(QCoreApplication.translate("MainWindow", u"Continuar", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Enviando mensajes</span></p></body></html>", None))
         self.message_text_2.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Noto Sans'; font-size:16px; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>", None))
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:16px; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:12pt;\"><br /></p></body></html>", None))
         self.message_text_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Ingrese el texto que mandara.", None))
         self.stop_button.setText("")
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Mensajes enviados</span></p></body></html>", None))

@@ -1,6 +1,7 @@
 import os
 import time
 
+from PySide6.QtCore import QRunnable, Slot, QObject, Signal
 from selenium import webdriver
 from selenium.common.exceptions import NoAlertPresentException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -8,23 +9,63 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from models.FilterNumbers import FilterNumbers
 from utils.logging_config import logger
 
 
-class WhatsappWorker:
+class WorkerSignals(QObject):
+    """
+    Defines the signals available from a running worker thread.
+
+    Supported signals are:
+
+    finished
+        No data
+
+    error
+        tuple (exctype, value, traceback.format_exc() )
+
+    result
+        object data returned from processing, anything
+
+    progress
+        int indicating % progress
+
+    """
+    finished = Signal()
+    error = Signal(tuple)
+    result = Signal(object)
+    progress = Signal(int)
+
+
+class Worker(QRunnable):
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+        self.kwargs["progress_callback"] = self.signals.progress
+
+    @Slot()
+    def run(self):
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except Exception as e:
+            pass
+        finally:
+            self.signals.finished.emit()
+
+class WhatsappWorker(QRunnable):
     """Clase que tiene los métodos para poder trabajar con WhatsappWeb"""
 
     def __init__(self):
-        self.__driver = None
+        super(WhatsappWorker, self).__init__()
+        self.driver = None
         self.error = None
-
-    def open_whatsapp(self):
-        """Nos permite abrir el navegador con el driver seleccionado"""
-        navigator = NavigatorDriver()
-        self.error = navigator.error
-        if not self.error:
-            self.__driver = navigator.driver
-            self.__driver.get("https://web.whatsapp.com")
+        self.signals = WorkerSignals()
 
     def send_message(self, phones, message):
         """Permite el envío de mensajes mediante whatsapp web
@@ -35,19 +76,54 @@ class WhatsappWorker:
         Returns:
             None
         """
-        for phone in phones:
-            self.__driver.get(f"https://web.whatsapp.com/send/?phone=+51{phone}&text&type=phone_number&app_absent=0")
-            time.sleep(2)
+        send_message = SendMessageWorker(self.driver, phones, message)
+        return send_message
+
+    @Slot()
+    def run(self):
+        """Nos permite abrir el navegador con el driver seleccionado"""
+        navigator = NavigatorDriver()
+        self.error = navigator.error
+        logger.info(navigator.driver.title)
+        if not self.error:
+            self.driver = navigator.driver
+            self.driver.get("https://web.whatsapp.com")
+
+
+class SendMessageWorker(QRunnable):
+    def __init__(self, driver, phones, message, **kwargs):
+        super(SendMessageWorker, self).__init__()
+        self._phones = phones
+        self._message = message
+        self._driver = driver
+        self.signals = WorkerSignals()
+        self.kwargs = kwargs
+        self.kwargs["progress_bar"] = self.signals.progress
+
+    @Slot()
+    def run(self):
+        total = len(self._phones)
+        for id_phone, phone in enumerate(self._phones):
+            phone = FilterNumbers.checking_phone(str(phone))
+            message = f"{id_phone}: {self._message}"
+            self.kwargs["progress_bar"].emit(id_phone/total * 100)
+            if not phone:
+                continue
+
+            logger.info(f"Phone verified: {phone}")
+
+            self._driver.get(f"https://web.whatsapp.com/send/?phone={phone}&text&type=phone_number&app_absent=0")
+            time.sleep(2.5)
 
             try:
-                alert = self.__driver.switch_to.alert
+                alert = self._driver.switch_to.alert
             except NoAlertPresentException:
                 pass
             else:
                 alert.accept()
 
             try:
-                message_box = WebDriverWait(self.__driver, 30).until(
+                message_box = WebDriverWait(self._driver, 30).until(
                     EC.visibility_of_element_located((
                         By.XPATH,
                         '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div'
@@ -57,10 +133,15 @@ class WhatsappWorker:
             except TimeoutException:
                 pass
             else:
+                logger.info(message)
                 message_box.send_keys(message)
-                time.sleep(0.5)
+                time.sleep(0.7)
                 message_box.send_keys(Keys.ENTER)
-                time.sleep(0.5)
+                time.sleep(1.5)
+        else:
+            self.signals.finished.emit()
+            time.sleep(3)
+            self._driver.quit()
 
 
 class NavigatorDriver:

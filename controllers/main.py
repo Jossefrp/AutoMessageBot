@@ -1,12 +1,12 @@
 import sys
-import time
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QThreadPool, QTimer
 from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
-                               QGridLayout, QCheckBox, QHeaderView, QTableWidgetItem, QMessageBox)
+                               QGridLayout, QCheckBox, QTableWidgetItem, QMessageBox, QTableWidget)
 
 from models.FileUpload import FileExcel
-from models.WhatsappWorker import WhatsappWorker
+from models.ObjectApp import ObjectApp
+from models.WhatsappWorker import WhatsappWorker, SendMessageWorker
 from utils import center_window, logger
 from views.ui_main import Ui_MainWindow
 
@@ -19,11 +19,13 @@ class MainWindow(QMainWindow):
         """
         super(MainWindow, self).__init__()
         # Propiedades
+        self.send_message = None
         self.db = db
-        self.value_headers = dict()
+        self.objects = list()
         self.message = None
         self.phones_header = None
         self.whatsapp = WhatsappWorker()
+        self.threadpool = QThreadPool()
 
         # Iniciando la ventana
         self.ui = Ui_MainWindow()
@@ -115,11 +117,27 @@ class MainWindow(QMainWindow):
                 column_headers.append(button.text())
 
         if column_number and column_headers:
-            for i in column_headers:
-                values = self.db.get_values(i)
-                self.phones_header = column_number
-                self.value_headers.update({i: values})
+            self.phones_header = column_number
+            for header in column_headers:
+                values = self.db.get_values(header)
+                self.objects.append(
+                    ObjectApp(
+                        header=header,
+                        values=values,
+                    )
+                )
+            if column_number not in column_headers:
+                self.objects.append(
+                    ObjectApp(
+                        header=column_number,
+                        values=self.db.get_values(column_number),
+                        status=False,
+                    )
+                )
+
+            logger.info(self.objects)
             self.main_widget()
+
         else:
             logger.info("No se ha seleccionado los botones")
             # Definiendo el QMessageBox
@@ -132,42 +150,44 @@ class MainWindow(QMainWindow):
     def main_widget(self):
         """Pestaña principal"""
         logger.info("main widget loading")
-        logger.debug(f"Columnas: {self.value_headers.keys()}")
+        logger.debug(f"Columnas: {[object_app.header for object_app in self.objects]}")
         self.ui.stackedWidget.setCurrentWidget(self.ui.main)
 
-        # Configurando las opciones de la tabla
-        headers = self.value_headers.keys()
-        self.ui.tableWidget.setColumnCount(len(headers))
-        self.ui.tableWidget.setHorizontalHeaderLabels(headers)
-        row_count = self.db.ws.max_row - 1
-        self.ui.tableWidget.setRowCount(row_count)
-
-        # Agregando los valores a las celdas de la tabla
-        for col, columns in enumerate(self.value_headers.values()):
-            for row, value in enumerate(columns):
-                if isinstance(value, (float, int)):
-                    value = int(value)
-                item = QTableWidgetItem(str(value))
-                item.setTextAlignment(Qt.AlignCenter)
-                self.ui.tableWidget.setItem(row, col, item)
-
-        header = self.ui.tableWidget.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
+        self.generate_table_widget(self.ui.tableWidget)
 
         # Obteniendo el texto del QTextEdit
         self.ui.start_main_button.clicked.connect(
             self.get_message
         )
 
+    def generate_table_widget(self, table: QTableWidget):
+        # Configurando las opciones de la tabla
+        headers = [
+            object_app.header for object_app in self.objects if object_app.status is True
+        ]
+        table.setColumnCount(len(headers))
+        table.setHorizontalHeaderLabels(headers)
+        row_count = self.db.ws.max_row - 1
+        table.setRowCount(row_count)
+
+        # Agregando los valores a las celdas de la tabla
+        for col, object_app in enumerate(self.objects):
+
+            if object_app.status is False:
+                continue
+
+            for row, value in enumerate(object_app.values):
+                if isinstance(value, (float, int)):
+                    value = int(value)
+                item = QTableWidgetItem(str(value))
+                item.setTextAlignment(Qt.AlignCenter)
+                table.setItem(row, col, item)
+
     def get_message(self):
         """Obtiene el mensaje del QTextEdit para poder enviar."""
         message = self.ui.message_text.toPlainText()
-        logger.info(message)
         logger.info(f"Mensaje: {message}")
-        if message.replace(" ", ""):
-            self.message = message
-            self.load_browser_widget()
-        else:
+        if not message.replace(" ", ""):
             # Mensaje de diálogo, si es que no se mandara un texto vació
             dlg = QMessageBox(self.ui.main)
             dlg.setWindowTitle("Error")
@@ -175,10 +195,13 @@ class MainWindow(QMainWindow):
             dlg.setIcon(QMessageBox.Warning)
             dlg.exec()
 
+        self.message = message
+        self.load_browser_widget()
+
     def load_browser_widget(self):
-        self.ui.stackedWidget.setCurrentWidget(self.ui.load_browser)
         logger.info("load browser widget loading")
-        self.whatsapp.open_whatsapp()
+        self.ui.stackedWidget.setCurrentWidget(self.ui.load_browser)
+        QTimer.singleShot(300, lambda: self.threadpool.start(self.whatsapp))
         if self.whatsapp.error:
             dlg = QMessageBox(self.ui.load_browser)
             dlg.setWindowTitle("Error en el navegador")
@@ -187,24 +210,40 @@ class MainWindow(QMainWindow):
             dlg.exec()
             if dlg:
                 sys.exit(1)
-
         self.load_qr_widget()
 
     def load_qr_widget(self):
         logger.info("load qr widget loading")
-        self.ui.stackedWidget.setCurrentWidget(self.ui.load_qr)
+        QTimer.singleShot(
+            8_000,
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.load_qr)
+        )
         self.ui.start_qr_button.clicked.connect(self.main_run)
 
     def main_run(self):
-        self.ui.stackedWidget.setCurrentWidget(self.ui.main_run)
-        self.whatsapp.send_message(
-            phones=self.value_headers[self.phones_header],
-            message=self.message
-        )
         logger.info("main run widget loading")
+        self.ui.stackedWidget.setCurrentWidget(self.ui.main_run)
+        self.ui.message_text_2.setText(self.message)
+
+        self.generate_table_widget(self.ui.tableWidget_2)
+        phones = [
+            object_app.values for object_app in self.objects if object_app.header == self.phones_header
+        ][0]
+        logger.info(f"Phone values: {phones}")
+        self.send_message = SendMessageWorker(self.whatsapp.driver, phones, message=self.message)
+        self.send_message.signals.finished.connect(self.finish)
+        self.send_message.signals.progress.connect(self.progress_bar)
+        self.threadpool.start(
+            self.send_message
+        )
+
+    def progress_bar(self, value):
+        self.ui.progressBar.setValue(value)
 
     def finish(self):
         logger.info("finish widget loading")
+        self.ui.stackedWidget.setCurrentWidget(self.ui.finish)
+        self.generate_table_widget(self.ui.tableWidget_3)
 
     def error(self):
         logger.info("error widget loading")

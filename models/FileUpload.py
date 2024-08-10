@@ -1,5 +1,6 @@
-from utils import logger
 import openpyxl
+
+from utils import logger
 
 
 class FileExcel:
