@@ -1,6 +1,7 @@
 import sys
 
 from PySide6.QtCore import Qt, QThreadPool, QTimer
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
                                QGridLayout, QCheckBox, QTableWidgetItem, QMessageBox, QTableWidget)
 
@@ -160,11 +161,13 @@ class MainWindow(QMainWindow):
             self.get_message
         )
 
-    def generate_table_widget(self, table: QTableWidget):
+    def generate_table_widget(self, table: QTableWidget, *args):
         # Configurando las opciones de la tabla
         headers = [
             object_app.header for object_app in self.objects if object_app.status is True
         ]
+        if args:
+            headers += args
         table.setColumnCount(len(headers))
         table.setHorizontalHeaderLabels(headers)
         row_count = self.db.ws.max_row - 1
@@ -225,25 +228,42 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentWidget(self.ui.main_run)
         self.ui.message_text_2.setText(self.message)
 
-        self.generate_table_widget(self.ui.tableWidget_2)
+        self.generate_table_widget(self.ui.tableWidget_2, "Status")
         phones = [
             object_app.values for object_app in self.objects if object_app.header == self.phones_header
         ][0]
         logger.info(f"Phone values: {phones}")
         self.send_message = SendMessageWorker(self.whatsapp.driver, phones, message=self.message)
+        self.send_message.signals.result.connect(self.status_number)
         self.send_message.signals.finished.connect(self.finish)
         self.send_message.signals.progress.connect(self.progress_bar)
         self.threadpool.start(
             self.send_message
         )
+        self.ui.stop_button.clicked.connect(lambda: self.send_message.signals.finished.emit())
 
-    def progress_bar(self, value):
-        self.ui.progressBar.setValue(value)
+    def progress_bar(self, row):
+        percentage = row / len(self.objects[0].values) * 100
+        logger.info(f"Porcentaje: {percentage}")
+
+        if row >= 1:
+            for col in range(len(self.objects)):
+                self.ui.tableWidget_2.item(row - 1, col).setBackground(QColor(255, 255, 255))
+
+        for col in range(len(self.objects)):
+            self.ui.tableWidget_2.item(row, col).setBackground(QColor(52, 125, 235))
+        self.ui.progressBar.setValue(percentage)
+
+    def status_number(self, data):
+        item = QTableWidgetItem(data[1])
+        item.setTextAlignment(Qt.AlignCenter)
+        self.ui.tableWidget_2.setItem(data[0], len(self.objects), item)
 
     def finish(self):
         logger.info("finish widget loading")
         self.ui.stackedWidget.setCurrentWidget(self.ui.finish)
         self.generate_table_widget(self.ui.tableWidget_3)
+
 
     def error(self):
         logger.info("error widget loading")

@@ -58,6 +58,7 @@ class Worker(QRunnable):
         finally:
             self.signals.finished.emit()
 
+
 class WhatsappWorker(QRunnable):
     """Clase que tiene los métodos para poder trabajar con WhatsappWeb"""
 
@@ -103,13 +104,15 @@ class SendMessageWorker(QRunnable):
     @Slot()
     def run(self):
         total = len(self._phones)
-        for id_phone, phone in enumerate(self._phones):
+        for row, phone in enumerate(self._phones):
             phone = FilterNumbers.checking_phone(str(phone))
-            message = f"{id_phone}: {self._message}"
-            self.kwargs["progress_bar"].emit(id_phone/total * 100)
+            message = f"{row}: {self._message}"
+            self.kwargs["progress_bar"].emit(row)
             if not phone:
+                status = "\U0000274C"
+                self.signals.result.emit((row, status))
                 continue
-
+            status = '\U00002705'
             logger.info(f"Phone verified: {phone}")
 
             self._driver.get(f"https://web.whatsapp.com/send/?phone={phone}&text&type=phone_number&app_absent=0")
@@ -130,14 +133,19 @@ class SendMessageWorker(QRunnable):
                     ))
                 )
 
-            except TimeoutException:
-                pass
+            except TimeoutException as error:
+                # self.signals.error.emit(error)
+                status = "\U0000274C"
+                continue
             else:
                 logger.info(message)
                 message_box.send_keys(message)
-                time.sleep(0.7)
+                time.sleep(0.2)
                 message_box.send_keys(Keys.ENTER)
-                time.sleep(1.5)
+                time.sleep(3)
+            finally:
+                self.signals.result.emit((row, status))
+
         else:
             self.signals.finished.emit()
             time.sleep(3)
