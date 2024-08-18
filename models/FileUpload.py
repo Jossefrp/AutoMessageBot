@@ -1,5 +1,8 @@
+from operator import index
+
 import openpyxl
 
+from models.ObjectApp import ObjectApp
 from utils import logger
 
 
@@ -26,9 +29,9 @@ class FileExcel:
             self.error = f"Ocurrió un error inesperado: {e}\nNo se puede abrir el archivo"
             logger.error(self.error)
         else:
-            self.columns = dict(self.get_headers())
+            self.columns = dict(self.__get_headers())
 
-    def get_headers(self) -> list:
+    def __get_headers(self) -> list:
         """Obtiene las columnas del archivo
         Returns:
             Lista de las columnas del archivo
@@ -38,14 +41,92 @@ class FileExcel:
         ]
         return columns
 
-    def get_values(self, header: str) -> list:
+
+class ActiveExcelFile:
+    def __init__(self, file_excel: FileExcel) -> None:
+        self._file = file_excel
+        self._columns = None
+        self._column_number = None
+        self._objects = list()
+
+    @property
+    def column_number(self):
+        return self._column_number
+
+    @column_number.setter
+    def column_number(self, column_number):
+        self._column_number = column_number
+
+    @property
+    def columns(self):
+        return self._columns
+
+    @columns.setter
+    def columns(self, columns):
+        self._columns = columns
+
+    @property
+    def objects(self):
+        return self._objects
+
+    @objects.setter
+    def objects(self, object_app: ObjectApp):
+        self._objects.append(object_app)
+
+    def get_count_values(self):
+        return len(self._objects[0].values)
+
+    def get_count_columns(self):
+        return len(self._columns)
+
+    def _get_column_values(self, column: str) -> list:
         """Obtiene los valores de una columna específica
         Args:
-            header: Nombre de columna del archivo
+            column: Nombre de columna del archivo
         Returns:
             Lista con los valores de una columna específica
         """
-        values_columns = [
-            self.ws.cell(row=i, column=self.columns[header]).value for i in range(2, self.ws.max_row + 1)
+        values_column = [
+            self._file.ws.cell(row=i, column=self._file.columns[column]).value for i in
+            range(2, self._file.ws.max_row + 1)
         ]
-        return values_columns
+        result = filter(None, values_column)
+        return list(result)
+
+    def get_columns_values(self) -> None:
+        """Obtiene los valores de una lista de columnas
+        Returns:
+            Lista de objetos ObjectApp
+        """
+        result = list()
+        index_cells_empty = 0
+        for i, column in enumerate(self._columns):
+            index_cells_empty = i if column == self.column_number else None
+            value_column = self._get_column_values(column)
+            result.append(
+                ObjectApp(
+                    header=column,
+                    values=value_column,
+                )
+            )
+        if self.column_number not in self._columns:
+            index_cells_empty = len(self.columns)
+            result.append(
+                ObjectApp(
+                    header=self.column_number,
+                    values=self._get_column_values(self.column_number),
+                    status=False
+                )
+            )
+
+        self._objects = result
+        self.delete_empty_objects(index_cells_empty)
+
+    def delete_empty_objects(self, index_numbers: int):
+        cells_to_delete = [
+            i for i, value in enumerate(self.objects[index_numbers].values)
+            if value in [None, 0, ""]
+        ]
+        for object_app in self.objects:
+            for cell in cells_to_delete:
+                object_app.values.remove(cell)

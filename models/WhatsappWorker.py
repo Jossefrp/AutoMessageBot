@@ -97,19 +97,20 @@ class SendMessageWorker(QRunnable):
         self._phones = phones
         self._message = message
         self._driver = driver
+        self.status = list()
         self.signals = WorkerSignals()
         self.kwargs = kwargs
         self.kwargs["progress_bar"] = self.signals.progress
 
     @Slot()
     def run(self):
-        total = len(self._phones)
         for row, phone in enumerate(self._phones):
             phone = FilterNumbers.checking_phone(str(phone))
             message = f"{row}: {self._message}"
             self.kwargs["progress_bar"].emit(row)
             if not phone:
-                status = "\U0000274C"
+                status = "\U0000274C Número invalido"
+                self.status.append(status)
                 self.signals.result.emit((row, status))
                 continue
             status = '\U00002705'
@@ -135,7 +136,7 @@ class SendMessageWorker(QRunnable):
 
             except TimeoutException as error:
                 # self.signals.error.emit(error)
-                status = "\U0000274C"
+                status = f"\U0000274C {error}"
                 continue
             else:
                 logger.info(message)
@@ -145,7 +146,7 @@ class SendMessageWorker(QRunnable):
                 time.sleep(3)
             finally:
                 self.signals.result.emit((row, status))
-
+            self.status.append(status)
         else:
             self.signals.finished.emit()
             time.sleep(3)

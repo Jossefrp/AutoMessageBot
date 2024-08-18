@@ -5,7 +5,7 @@ from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (QMainWindow, QRadioButton, QGroupBox,
                                QGridLayout, QCheckBox, QTableWidgetItem, QMessageBox, QTableWidget)
 
-from models.FileUpload import FileExcel
+from models.FileUpload import FileExcel, ActiveExcelFile
 from models.ObjectApp import ObjectApp
 from models.WhatsappWorker import WhatsappWorker, SendMessageWorker
 from utils import center_window, logger
@@ -13,7 +13,7 @@ from views.ui_main import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, db: FileExcel) -> None:
+    def __init__(self, file_excel: FileExcel) -> None:
         """Ventana principal
         Args:
             db(FileExcel): Archivo excel donde se encuentra la información
@@ -21,10 +21,9 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         # Propiedades
         self.send_message = None
-        self.db = db
-        self.objects = list()
+        self.file_excel = file_excel
+        self.active_file = ActiveExcelFile(file_excel)
         self.message = None
-        self.phones_header = None
         self.whatsapp = WhatsappWorker()
         self.threadpool = QThreadPool()
 
@@ -83,7 +82,7 @@ class MainWindow(QMainWindow):
               border: 1px solid #cccccc;
             }
         """
-        for header in self.db.columns.items():
+        for header in self.file_excel.columns.items():
             #: header[0] valor de la celda
             radio_button = QRadioButton(header[0], box_select_numbers)
             checked_button = QCheckBox(header[0], box_select_header)
@@ -112,31 +111,17 @@ class MainWindow(QMainWindow):
             if button.isChecked():
                 column_number = button.text()
                 break
-        column_headers = list()
+        columns_headers = list()
         for button in box2.findChildren(QCheckBox):
             if button.isChecked():
-                column_headers.append(button.text())
+                columns_headers.append(button.text())
 
-        if column_number and column_headers:
-            self.phones_header = column_number
-            for header in column_headers:
-                values = self.db.get_values(header)
-                self.objects.append(
-                    ObjectApp(
-                        header=header,
-                        values=values,
-                    )
-                )
-            if column_number not in column_headers:
-                self.objects.append(
-                    ObjectApp(
-                        header=column_number,
-                        values=self.db.get_values(column_number),
-                        status=False,
-                    )
-                )
+        if column_number and columns_headers:
+            self.active_file.columns = columns_headers
+            self.active_file.column_number = column_number
+            self.active_file.get_columns_values()
 
-            logger.info(self.objects)
+            logger.info(self.active_file.objects)
             self.main_widget()
 
         else:
@@ -151,7 +136,7 @@ class MainWindow(QMainWindow):
     def main_widget(self):
         """Pestaña principal"""
         logger.info("main widget loading")
-        logger.debug(f"Columnas: {[object_app.header for object_app in self.objects]}")
+        logger.debug(f"Columnas: {self.active_file.columns}")
         self.ui.stackedWidget.setCurrentWidget(self.ui.main)
 
         self.generate_table_widget(self.ui.tableWidget)
@@ -160,31 +145,6 @@ class MainWindow(QMainWindow):
         self.ui.start_main_button.clicked.connect(
             self.get_message
         )
-
-    def generate_table_widget(self, table: QTableWidget, *args):
-        # Configurando las opciones de la tabla
-        headers = [
-            object_app.header for object_app in self.objects if object_app.status is True
-        ]
-        if args:
-            headers += args
-        table.setColumnCount(len(headers))
-        table.setHorizontalHeaderLabels(headers)
-        row_count = self.db.ws.max_row - 1
-        table.setRowCount(row_count)
-
-        # Agregando los valores a las celdas de la tabla
-        for col, object_app in enumerate(self.objects):
-
-            if object_app.status is False:
-                continue
-
-            for row, value in enumerate(object_app.values):
-                if isinstance(value, (float, int)):
-                    value = int(value)
-                item = QTableWidgetItem(str(value))
-                item.setTextAlignment(Qt.AlignCenter)
-                table.setItem(row, col, item)
 
     def get_message(self):
         """Obtiene el mensaje del QTextEdit para poder enviar."""
@@ -230,8 +190,10 @@ class MainWindow(QMainWindow):
 
         self.generate_table_widget(self.ui.tableWidget_2, "Status")
         phones = [
-            object_app.values for object_app in self.objects if object_app.header == self.phones_header
+            object_app.values for object_app in self.active_file.objects if
+            object_app.header == self.active_file.column_number
         ][0]
+
         logger.info(f"Phone values: {phones}")
         self.send_message = SendMessageWorker(self.whatsapp.driver, phones, message=self.message)
         self.send_message.signals.result.connect(self.status_number)
@@ -242,28 +204,63 @@ class MainWindow(QMainWindow):
         )
         self.ui.stop_button.clicked.connect(lambda: self.send_message.signals.finished.emit())
 
+
     def progress_bar(self, row):
-        percentage = row / len(self.objects[0].values) * 100
+        percentage = row / (self.ui.tableWidget_2.rowCount() - 1) * 100
         logger.info(f"Porcentaje: {percentage}")
 
         if row >= 1:
-            for col in range(len(self.objects)):
+            for col in range(self.ui.tableWidget_2.columnCount()-1):
                 self.ui.tableWidget_2.item(row - 1, col).setBackground(QColor(255, 255, 255))
 
-        for col in range(len(self.objects)):
+        for col in range(self.ui.tableWidget_2.columnCount()-1):
             self.ui.tableWidget_2.item(row, col).setBackground(QColor(52, 125, 235))
         self.ui.progressBar.setValue(percentage)
+
 
     def status_number(self, data):
         item = QTableWidgetItem(data[1])
         item.setTextAlignment(Qt.AlignCenter)
-        self.ui.tableWidget_2.setItem(data[0], len(self.objects), item)
+        self.ui.tableWidget_2.setItem(data[0], self.ui.tableWidget_2.columnCount() - 1, item)
+
 
     def finish(self):
         logger.info("finish widget loading")
-        self.ui.stackedWidget.setCurrentWidget(self.ui.finish)
+        self.active_file.objects = ObjectApp(header="Status", values=self.send_message.status)
+        QTimer.singleShot(
+            1000,
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.finish)
+        )
+
         self.generate_table_widget(self.ui.tableWidget_3)
 
 
     def error(self):
         logger.info("error widget loading")
+
+
+    def generate_table_widget(self, table: QTableWidget, *args):
+        # Configurando las opciones de la tabla
+        headers = self.active_file.columns
+        if args:
+            headers += args
+        table.setColumnCount(self.active_file.get_count_columns())
+        table.setHorizontalHeaderLabels(headers)
+        row_count = self.active_file.get_count_values()
+        table.setRowCount(row_count)
+
+        # Agregando los valores a las celdas de la tabla
+        logger.info(f"Columnas: {len(self.active_file.objects)}")
+        flag = False
+        for col, object_app in enumerate(self.active_file.objects):
+            if object_app.status is False:
+                flag = True
+                continue
+
+            col = col - 1 if flag and table is self.ui.tableWidget_3 else col
+            for row, value in enumerate(object_app.values):
+                if isinstance(value, (float, int)):
+                    value = int(value)
+                item = QTableWidgetItem(str(value))
+                item.setTextAlignment(Qt.AlignCenter)
+                table.setItem(row, col, item)
