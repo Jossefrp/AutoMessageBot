@@ -35,7 +35,7 @@ class WorkerSignals(QObject):
     finished = Signal()
     error = Signal(tuple)
     result = Signal(object)
-    progress = Signal(int)
+    progress = Signal(float)
 
 
 class Worker(QRunnable):
@@ -105,6 +105,8 @@ class SendMessageWorker(QRunnable):
     @Slot()
     def run(self):
         for row, phone in enumerate(self._phones):
+            value_before = row - 0.5
+            self.kwargs["progress_bar"].emit(value_before)
             phone = FilterNumbers.checking_phone(str(phone))
             message = f"{row}: {self._message}"
             self.kwargs["progress_bar"].emit(row)
