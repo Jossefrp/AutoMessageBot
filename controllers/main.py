@@ -199,30 +199,35 @@ class MainWindow(QMainWindow):
         self.send_message.signals.result.connect(self.status_number)
         self.send_message.signals.finished.connect(self.finish)
         self.send_message.signals.progress.connect(self.progress_bar)
+        self.send_message.signals.progress_items.connect(self.progress_values)
         self.threadpool.start(
             self.send_message
         )
         self.ui.stop_button.clicked.connect(lambda: self.send_message.signals.finished.emit())
 
-
-    def progress_bar(self, row):
-        percentage = row / (self.ui.tableWidget_2.rowCount() - 1) * 100
+    def progress_bar(self, row: float):
+        percentage = row / self.ui.tableWidget_2.rowCount() * 100
         logger.info(f"Porcentaje: {percentage}")
-
-        if row >= 1:
-            for col in range(self.ui.tableWidget_2.columnCount()-1):
-                self.ui.tableWidget_2.item(row - 1, col).setBackground(QColor(255, 255, 255))
-
-        for col in range(self.ui.tableWidget_2.columnCount()-1):
-            self.ui.tableWidget_2.item(row, col).setBackground(QColor(52, 125, 235))
         self.ui.progressBar.setValue(percentage)
 
+    def progress_values(self, row):
+        table_change = lambda r, column, color_background: (
+            self.ui.tableWidget_2.item(r, column).setBackground(color_background)
+        )
+
+        if row >= 1:
+            color = QColor(255, 255, 255)
+            for col in range(self.ui.tableWidget_2.columnCount() - 1):
+                table_change(row - 1, col, color)
+
+        color = QColor(52, 125, 235)
+        for col in range(self.ui.tableWidget_2.columnCount() - 1):
+            table_change(row, col, color)
 
     def status_number(self, data):
         item = QTableWidgetItem(data[1])
         item.setTextAlignment(Qt.AlignCenter)
         self.ui.tableWidget_2.setItem(data[0], self.ui.tableWidget_2.columnCount() - 1, item)
-
 
     def finish(self):
         logger.info("finish widget loading")
@@ -234,10 +239,8 @@ class MainWindow(QMainWindow):
 
         self.generate_table_widget(self.ui.tableWidget_3)
 
-
     def error(self):
         logger.info("error widget loading")
-
 
     def generate_table_widget(self, table: QTableWidget, *args):
         # Configurando las opciones de la tabla

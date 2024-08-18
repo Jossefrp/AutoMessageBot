@@ -17,7 +17,7 @@ class FilterNumbers:
         """
         number = number.strip().replace(" ", "")
 
-        regex = r"^(\+51)?9[0-9]{8}$"
+        regex = r"^(\+51)?9\d{8}$"
         result = re.search(regex, number)
         if result is None:
             return
@@ -31,7 +31,6 @@ class FilterNumbers:
 
     @staticmethod
     def checking_phones(numbers: list) -> list[str]:
-        # numbers_filter = filter(FilterNumbers.checking_phone, numbers)
         numbers_adap = map(FilterNumbers.checking_phone, numbers)
 
         return list(numbers_adap)
