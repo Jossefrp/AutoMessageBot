@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
         self.select_columns.setContentsMargins(0, 0, 0, 0)
         self.start_button_3 = QPushButton(self.select_column)
         self.start_button_3.setObjectName(u"start_button_3")
-        self.start_button_3.setGeometry(QRect(365, 442, 230, 50))
+        self.start_button_3.setGeometry(QRect(365, 439, 230, 50))
         font = QFont()
         font.setPointSize(14)
         self.start_button_3.setFont(font)
@@ -131,7 +131,7 @@ class Ui_MainWindow(object):
         self.message_text.setTabChangesFocus(False)
         self.start_main_button = QPushButton(self.main_frame)
         self.start_main_button.setObjectName(u"start_main_button")
-        self.start_main_button.setGeometry(QRect(365, 442, 230, 50))
+        self.start_main_button.setGeometry(QRect(365, 439, 230, 50))
         self.start_main_button.setFont(font)
         self.start_main_button.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(0, 168, 132);\n"
@@ -146,7 +146,7 @@ class Ui_MainWindow(object):
 "}")
         self.tableWidget = QTableWidget(self.main_frame)
         self.tableWidget.setObjectName(u"tableWidget")
-        self.tableWidget.setGeometry(QRect(190, 191, 578, 216))
+        self.tableWidget.setGeometry(QRect(78, 191, 804, 219))
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -216,7 +216,7 @@ class Ui_MainWindow(object):
         self.label_6.setGeometry(QRect(65, 379, 461, 31))
         self.start_qr_button = QPushButton(self.load_qr)
         self.start_qr_button.setObjectName(u"start_qr_button")
-        self.start_qr_button.setGeometry(QRect(365, 431, 230, 50))
+        self.start_qr_button.setGeometry(QRect(365, 439, 230, 50))
         self.start_qr_button.setFont(font)
         self.start_qr_button.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(0, 168, 132);\n"
@@ -265,7 +265,7 @@ class Ui_MainWindow(object):
         self.message_text_2.setReadOnly(True)
         self.stop_button = QPushButton(self.main_run_frame)
         self.stop_button.setObjectName(u"stop_button")
-        self.stop_button.setGeometry(QRect(133, 428, 45, 45))
+        self.stop_button.setGeometry(QRect(133, 439, 45, 45))
         font2 = QFont()
         font2.setPointSize(15)
         self.stop_button.setFont(font2)
@@ -277,7 +277,7 @@ class Ui_MainWindow(object):
         self.stop_button.setFlat(True)
         self.tableWidget_2 = QTableWidget(self.main_run_frame)
         self.tableWidget_2.setObjectName(u"tableWidget_2")
-        self.tableWidget_2.setGeometry(QRect(190, 191, 578, 216))
+        self.tableWidget_2.setGeometry(QRect(78, 191, 804, 216))
         sizePolicy.setHeightForWidth(self.tableWidget_2.sizePolicy().hasHeightForWidth())
         self.tableWidget_2.setSizePolicy(sizePolicy)
         self.tableWidget_2.setMaximumSize(QSize(2000, 2000))
@@ -307,8 +307,8 @@ class Ui_MainWindow(object):
         self.tableWidget_2.verticalHeader().setVisible(True)
         self.progressBar = QProgressBar(self.main_run_frame)
         self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setGeometry(QRect(194, 429, 572, 44))
-        self.progressBar.setValue(24)
+        self.progressBar.setGeometry(QRect(194, 439, 572, 44))
+        self.progressBar.setValue(0)
         self.stackedWidget.addWidget(self.main_run)
         self.finish = QWidget()
         self.finish.setObjectName(u"finish")
@@ -325,11 +325,11 @@ class Ui_MainWindow(object):
         self.finish_frame.setFrameShadow(QFrame.Sunken)
         self.label_11 = QLabel(self.finish_frame)
         self.label_11.setObjectName(u"label_11")
-        self.label_11.setGeometry(QRect(65, 44, 391, 51))
+        self.label_11.setGeometry(QRect(65, 64, 391, 51))
         self.label_11.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
         self.tableWidget_3 = QTableWidget(self.finish_frame)
         self.tableWidget_3.setObjectName(u"tableWidget_3")
-        self.tableWidget_3.setGeometry(QRect(180, 150, 578, 216))
+        self.tableWidget_3.setGeometry(QRect(78, 160, 804, 219))
         sizePolicy.setHeightForWidth(self.tableWidget_3.sizePolicy().hasHeightForWidth())
         self.tableWidget_3.setSizePolicy(sizePolicy)
         self.tableWidget_3.setMaximumSize(QSize(2000, 2000))
@@ -359,7 +359,7 @@ class Ui_MainWindow(object):
         self.tableWidget_3.verticalHeader().setVisible(True)
         self.restar_button = QPushButton(self.finish_frame)
         self.restar_button.setObjectName(u"restar_button")
-        self.restar_button.setGeometry(QRect(602, 417, 230, 50))
+        self.restar_button.setGeometry(QRect(602, 439, 230, 50))
         self.restar_button.setFont(font)
         self.restar_button.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(0, 168, 132);\n"
@@ -374,7 +374,7 @@ class Ui_MainWindow(object):
 "}")
         self.close_button = QPushButton(self.finish_frame)
         self.close_button.setObjectName(u"close_button")
-        self.close_button.setGeometry(QRect(162, 417, 230, 50))
+        self.close_button.setGeometry(QRect(162, 439, 230, 50))
         self.close_button.setFont(font)
         self.close_button.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(0, 168, 132);\n"
@@ -404,14 +404,14 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(5)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"automessagebot", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#ffffff;\">Elija la columna en la que se encuentran los n\u00fameros de tel\u00e9fono</span></p></body></html>", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Elija las columnas que ser\u00e1n visibles en la pr\u00f3xima tabla</span></p></body></html>", None))
         self.start_button_3.setText(QCoreApplication.translate("MainWindow", u"Continuar", None))
@@ -426,18 +426,15 @@ class Ui_MainWindow(object):
         self.start_qr_button.setText(QCoreApplication.translate("MainWindow", u"Continuar", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Enviando mensajes</span></p></body></html>", None))
         self.message_text_2.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:16px; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:12pt;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'Noto Sans'; font-size:16px; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>", None))
         self.message_text_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Ingrese el texto que mandara.", None))
         self.stop_button.setText("")
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Mensajes enviados</span></p></body></html>", None))
-        self.restar_button.setText(QCoreApplication.translate("MainWindow", u"Iniciar", None))
-        self.close_button.setText(QCoreApplication.translate("MainWindow", u"Iniciar", None))
+        self.restar_button.setText(QCoreApplication.translate("MainWindow", u"Descargar informe", None))
+        self.close_button.setText(QCoreApplication.translate("MainWindow", u"Nueva consulta", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">!Ha ocurrido un error!</span></p></body></html>", None))
     # retranslateUi
 
