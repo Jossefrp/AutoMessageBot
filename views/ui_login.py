@@ -164,7 +164,7 @@ class Ui_LoginWindow(object):
     # setupUi
 
     def retranslateUi(self, LoginWindow):
-        LoginWindow.setWindowTitle(QCoreApplication.translate("LoginWindow", u"MainWindow", None))
+        LoginWindow.setWindowTitle(QCoreApplication.translate("LoginWindow", u"automessagebot", None))
         self.label.setText(QCoreApplication.translate("LoginWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:20pt; font-weight:600; text-decoration: underline;\">Automessagebot</span></p></body></html>", None))
         self.start_button.setText(QCoreApplication.translate("LoginWindow", u"Iniciar", None))
         self.info_button.setText("")
