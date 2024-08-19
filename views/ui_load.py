@@ -29,7 +29,7 @@ class Ui_LoadWindow(object):
         self.centralwidget.setEnabled(True)
         self.centralwidget.setMinimumSize(QSize(960, 540))
         self.centralwidget.setMaximumSize(QSize(960, 540))
-        self.centralwidget.setAutoFillBackground(False)
+        self.centralwidget.setAutoFillBackground(True)
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setEnabled(True)
@@ -52,7 +52,7 @@ class Ui_LoadWindow(object):
         self.pushButton = QPushButton(self.frame)
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setEnabled(True)
-        self.pushButton.setGeometry(QRect(365, 315, 230, 50))
+        self.pushButton.setGeometry(QRect(365, 340, 230, 50))
         font1 = QFont()
         font1.setPointSize(14)
         self.pushButton.setFont(font1)
@@ -82,7 +82,7 @@ class Ui_LoadWindow(object):
     # setupUi
 
     def retranslateUi(self, LoadWindow):
-        LoadWindow.setWindowTitle(QCoreApplication.translate("LoadWindow", u"MainWindow", None))
+        LoadWindow.setWindowTitle(QCoreApplication.translate("LoadWindow", u"automessagebot", None))
         self.label.setText(QCoreApplication.translate("LoadWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; color:#dff3ed;\">Sube un archivo de excel para extraer los datos</span></p></body></html>", None))
         self.pushButton.setText(QCoreApplication.translate("LoadWindow", u"Subir archivo", None))
         self.label_2.setText("")
