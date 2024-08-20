@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>automessagebot</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../../../../../home/jossef/PycharmProjects/GUI_app/assets/icons/img_app.ico</normaloff>../../../../../../../../home/jossef/PycharmProjects/GUI_app/assets/icons/img_app.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
     <bool>true</bool>

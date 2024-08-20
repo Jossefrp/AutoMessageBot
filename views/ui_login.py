@@ -13,6 +13,7 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QSize, QTime, QUrl, Qt)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QLabel, QMainWindow,
     QPushButton, QSizePolicy, QWidget)
@@ -24,6 +25,9 @@ class Ui_LoginWindow(object):
         LoginWindow.resize(960, 540)
         LoginWindow.setMinimumSize(QSize(960, 540))
         LoginWindow.setMaximumSize(QSize(960, 540))
+        icon = QIcon()
+        icon.addFile(u"./assets/icons/img_app.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        LoginWindow.setWindowIcon(icon)
         self.centralwidget = QWidget(LoginWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
@@ -35,10 +39,11 @@ class Ui_LoginWindow(object):
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(0, 70, 480, 51))
-        self.label.setStyleSheet(u"background-color: rgba(255, 255, 255,0);")
+        self.label.setStyleSheet(u"background-color: rgba(255, 255, 255,0);\n"
+"color: white;")
         self.start_button = QPushButton(self.frame)
         self.start_button.setObjectName(u"start_button")
-        self.start_button.setGeometry(QRect(150, 270, 216, 50))
+        self.start_button.setGeometry(QRect(119, 270, 242, 50))
         font = QFont()
         font.setBold(True)
         font.setItalic(False)
@@ -47,10 +52,8 @@ class Ui_LoginWindow(object):
 "	color: white;\n"
 "    background-color: rgba(84, 185, 179, 255);\n"
 "    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
+"    border-radius: 20px;\n"
+"    font: bold 16px;\n"
 "    min-width: 10em;\n"
 "    padding: 6px;\n"
 "}\n"
@@ -67,9 +70,10 @@ class Ui_LoginWindow(object):
         self.info_button = QPushButton(self.frame)
         self.info_button.setObjectName(u"info_button")
         self.info_button.setGeometry(QRect(420, 470, 52, 52))
-        icon = QIcon()
-        icon.addFile(u"assets/icons/login/info.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.info_button.setIcon(icon)
+        self.info_button.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
+        icon1 = QIcon()
+        icon1.addFile(u"./assets/icons/login/info.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.info_button.setIcon(icon1)
         self.info_button.setIconSize(QSize(52, 52))
         self.info_button.setFlat(True)
         self.frame_2 = QFrame(self.centralwidget)
@@ -82,8 +86,8 @@ class Ui_LoginWindow(object):
         self.img_python = QLabel(self.frame_2)
         self.img_python.setObjectName(u"img_python")
         self.img_python.setGeometry(QRect(280, 170, 101, 61))
-        self.img_python.setStyleSheet(u"background-color: rgba(255, 255, 255, 0%);")
-        self.img_python.setPixmap(QPixmap(u"assets/icons/login/python.png"))
+        self.img_python.setStyleSheet(u"background-color: rgb(255, 255, 255, 0%);")
+        self.img_python.setPixmap(QPixmap(u"./assets/icons/login/python.png"))
         self.img_python.setScaledContents(True)
         self.title_text = QLabel(self.frame_2)
         self.title_text.setObjectName(u"title_text")
@@ -97,15 +101,15 @@ class Ui_LoginWindow(object):
         self.img_pc.setObjectName(u"img_pc")
         self.img_pc.setGeometry(QRect(80, 170, 291, 181))
         self.img_pc.setStyleSheet(u"background-color: rgba(255, 255, 255, 0%);")
-        self.img_pc.setPixmap(QPixmap(u"assets/icons/login/pc.png"))
+        self.img_pc.setPixmap(QPixmap(u"./assets/icons/login/pc.png"))
         self.img_pc.setScaledContents(True)
         self.linkd_button = QPushButton(self.frame_2)
         self.linkd_button.setObjectName(u"linkd_button")
         self.linkd_button.setGeometry(QRect(90, 406, 50, 50))
         self.linkd_button.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
-        icon1 = QIcon()
-        icon1.addFile(u"assets/icons/login/linkdin.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.linkd_button.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u"./assets/icons/login/linkdin.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.linkd_button.setIcon(icon2)
         self.linkd_button.setIconSize(QSize(50, 50))
         self.linkd_button.setCheckable(False)
         self.linkd_button.setChecked(False)
@@ -117,9 +121,9 @@ class Ui_LoginWindow(object):
         self.github_button.setObjectName(u"github_button")
         self.github_button.setGeometry(QRect(90, 452, 50, 50))
         self.github_button.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
-        icon2 = QIcon()
-        icon2.addFile(u"assets/icons/login/github.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.github_button.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u"./assets/icons/login/github.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.github_button.setIcon(icon3)
         self.github_button.setIconSize(QSize(60, 60))
         self.github_button.setAutoRepeat(False)
         self.github_button.setAutoDefault(False)

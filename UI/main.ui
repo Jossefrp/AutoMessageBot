@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>automessagebot</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../assets/icons/img_app.ico</normaloff>../assets/icons/img_app.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
     <size>
@@ -186,7 +190,10 @@ color: rgb(223, 243, 237);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>14</pointsize>
+        <pointsize>-1</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
@@ -194,6 +201,7 @@ color: rgb(223, 243, 237);</string>
 	background-color: rgb(0, 168, 132);
 border-radius: 25px;
 	color: white;
+font: bold 17px;
 }
 QPushButton:hover{
 	background-color: rgb(6, 207, 156);
@@ -320,7 +328,10 @@ font: 16px;
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>-1</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -328,6 +339,7 @@ font: 16px;
 	background-color: rgb(0, 168, 132);
 border-radius: 25px;
 color: white;
+font: bold 17px;
 }
 QPushButton:hover{
 	background-color: rgb(6, 207, 156);
@@ -545,7 +557,10 @@ border: 1px solid rgb(0,206,151);
       </property>
       <property name="font">
        <font>
-        <pointsize>14</pointsize>
+        <pointsize>-1</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
@@ -553,6 +568,7 @@ border: 1px solid rgb(0,206,151);
 	background-color: rgb(0, 168, 132);
 border-radius: 25px;
 color: white;
+font: bold 17px;
 }
 QPushButton:hover{
 	background-color: rgb(6, 207, 156);
@@ -932,7 +948,10 @@ border: 1px solid rgb(0,206,151);
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>-1</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -940,6 +959,7 @@ border: 1px solid rgb(0,206,151);
 	background-color: rgb(0, 168, 132);
 border-radius: 25px;
 color: white;
+font: bold 17px;
 }
 QPushButton:hover{
 	background-color: rgb(6, 207, 156);
@@ -963,7 +983,10 @@ QPushButton:pressed{
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>-1</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -971,6 +994,7 @@ QPushButton:pressed{
 	background-color: rgb(0, 168, 132);
 border-radius: 25px;
 color: white;
+font: bold 17px;
 }
 QPushButton:hover{
 	background-color: rgb(6, 207, 156);

@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../assets/icons/img_app.ico</normaloff>../assets/icons/img_app.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QFrame" name="frame">
     <property name="geometry">
@@ -64,9 +68,9 @@ color: white;</string>
     <widget class="QPushButton" name="start_button">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>119</x>
        <y>270</y>
-       <width>216</width>
+       <width>242</width>
        <height>50</height>
       </rect>
      </property>
@@ -83,10 +87,8 @@ color: white;</string>
 	color: white;
     background-color: rgba(84, 185, 179, 255);
     border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: beige;
-    font: bold 14px;
+    border-radius: 20px;
+    font: bold 16px;
     min-width: 10em;
     padding: 6px;
 }
@@ -132,7 +134,7 @@ QPushButton:pressed {
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../assets/login/info.png</normaloff>../assets/login/info.png</iconset>
+       <normaloff>../assets/icons/login/info.png</normaloff>../assets/icons/login/info.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -180,7 +182,7 @@ QPushButton:pressed {
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../assets/login/python.png</pixmap>
+      <pixmap>../assets/icons/login/python.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -224,7 +226,7 @@ color: rgb(255, 255, 255);</string>
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../assets/login/pc.png</pixmap>
+      <pixmap>../assets/icons/login/pc.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -247,7 +249,7 @@ color: rgb(255, 255, 255);</string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../assets/login/linkdin.png</normaloff>../assets/login/linkdin.png</iconset>
+       <normaloff>../assets/icons/login/linkdin.png</normaloff>../assets/icons/login/linkdin.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -291,7 +293,7 @@ color: rgb(255, 255, 255);</string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../assets/login/github.png</normaloff>../assets/login/github.png</iconset>
+       <normaloff>../assets/icons/login/github.png</normaloff>../assets/icons/login/github.png</iconset>
      </property>
      <property name="iconSize">
       <size>

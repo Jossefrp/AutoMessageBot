@@ -27,6 +27,9 @@ class Ui_MainWindow(object):
         MainWindow.resize(960, 540)
         MainWindow.setMinimumSize(QSize(960, 540))
         MainWindow.setMaximumSize(QSize(960, 540))
+        icon = QIcon()
+        icon.addFile(u"./assets/icons/img_app.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setMinimumSize(QSize(960, 540))
@@ -80,12 +83,14 @@ class Ui_MainWindow(object):
         self.start_button_3.setObjectName(u"start_button_3")
         self.start_button_3.setGeometry(QRect(365, 439, 230, 50))
         font = QFont()
-        font.setPointSize(14)
+        font.setBold(True)
+        font.setItalic(False)
         self.start_button_3.setFont(font)
         self.start_button_3.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(0, 168, 132);\n"
 "border-radius: 25px;\n"
 "	color: white;\n"
+"font: bold 17px;\n"
 "}\n"
 "QPushButton:hover{\n"
 "	background-color: rgb(6, 207, 156);\n"
@@ -137,6 +142,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(0, 168, 132);\n"
 "border-radius: 25px;\n"
 "color: white;\n"
+"font: bold 17px;\n"
 "}\n"
 "QPushButton:hover{\n"
 "	background-color: rgb(6, 207, 156);\n"
@@ -222,6 +228,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(0, 168, 132);\n"
 "border-radius: 25px;\n"
 "color: white;\n"
+"font: bold 17px;\n"
 "}\n"
 "QPushButton:hover{\n"
 "	background-color: rgb(6, 207, 156);\n"
@@ -270,9 +277,9 @@ class Ui_MainWindow(object):
         font2.setPointSize(15)
         self.stop_button.setFont(font2)
         self.stop_button.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
-        icon = QIcon()
-        icon.addFile(u"./assets/icons/main/boton-detener.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.stop_button.setIcon(icon)
+        icon1 = QIcon()
+        icon1.addFile(u"./assets/icons/main/boton-detener.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.stop_button.setIcon(icon1)
         self.stop_button.setIconSize(QSize(45, 45))
         self.stop_button.setFlat(True)
         self.tableWidget_2 = QTableWidget(self.main_run_frame)
@@ -365,6 +372,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(0, 168, 132);\n"
 "border-radius: 25px;\n"
 "color: white;\n"
+"font: bold 17px;\n"
 "}\n"
 "QPushButton:hover{\n"
 "	background-color: rgb(6, 207, 156);\n"
@@ -380,6 +388,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(0, 168, 132);\n"
 "border-radius: 25px;\n"
 "color: white;\n"
+"font: bold 17px;\n"
 "}\n"
 "QPushButton:hover{\n"
 "	background-color: rgb(6, 207, 156);\n"
