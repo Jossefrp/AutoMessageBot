@@ -1004,7 +1004,7 @@ QPushButton:pressed{
 }</string>
        </property>
        <property name="text">
-        <string>Nueva consulta</string>
+        <string>Nuevo envío</string>
        </property>
       </widget>
      </widget>

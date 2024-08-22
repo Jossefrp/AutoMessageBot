@@ -1,5 +1,6 @@
 import os
 import time
+from math import floor
 
 from PySide6.QtCore import QRunnable, Slot, QObject, Signal
 from selenium import webdriver
@@ -36,27 +37,7 @@ class WorkerSignals(QObject):
     error = Signal(tuple)
     result = Signal(object)
     progress = Signal(float)
-
-
-class Worker(QRunnable):
-    def __init__(self, fn, *args, **kwargs):
-        super(Worker, self).__init__()
-
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-        self.signals = WorkerSignals()
-
-        self.kwargs["progress_callback"] = self.signals.progress
-
-    @Slot()
-    def run(self):
-        try:
-            result = self.fn(*self.args, **self.kwargs)
-        except Exception as e:
-            pass
-        finally:
-            self.signals.finished.emit()
+    progress_items = Signal(int)
 
 
 class WhatsappWorker(QRunnable):
@@ -101,25 +82,42 @@ class SendMessageWorker(QRunnable):
         self.signals = WorkerSignals()
         self.kwargs = kwargs
         self.kwargs["progress_bar"] = self.signals.progress
+        self.kwargs["progress_values"] = self.signals.progress_items
+
+    def timer(self, value, step, start, time_wait):
+        time.sleep(time_wait - floor(time_wait))
+        for i in range(floor(time_wait)):
+            self.kwargs["progress_bar"].emit(value + (start + i) * step)
+            time.sleep(time_wait)
 
     @Slot()
     def run(self):
+        step = 1 / 12
         for row, phone in enumerate(self._phones):
-            value_before = row - 0.5
-            self.kwargs["progress_bar"].emit(value_before)
+            self.kwargs["progress_values"].emit(row)
             phone = FilterNumbers.checking_phone(str(phone))
             message = f"{row}: {self._message}"
-            self.kwargs["progress_bar"].emit(row)
+            self.kwargs["progress_bar"].emit(row + step)
+
             if not phone:
                 status = "\U0000274C Número invalido"
                 self.status.append(status)
                 self.signals.result.emit((row, status))
+                self.kwargs["progress_bar"].emit(row + 1)
                 continue
+
             status = '\U00002705'
             logger.info(f"Phone verified: {phone}")
 
+            self.kwargs["progress_bar"].emit(row + 2 * step)
             self._driver.get(f"https://web.whatsapp.com/send/?phone={phone}&text&type=phone_number&app_absent=0")
-            time.sleep(2.5)
+
+            self.timer(
+                value=row,
+                step=step,
+                start=3,
+                time_wait=2.5
+            )
 
             try:
                 alert = self._driver.switch_to.alert
@@ -128,6 +126,7 @@ class SendMessageWorker(QRunnable):
             else:
                 alert.accept()
 
+            self.kwargs["progress_bar"].emit(row + 5 * step)
             try:
                 message_box = WebDriverWait(self._driver, 30).until(
                     EC.visibility_of_element_located((
@@ -135,7 +134,7 @@ class SendMessageWorker(QRunnable):
                         '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div'
                     ))
                 )
-
+                self.kwargs["progress_bar"].emit(row + 6 * step)
             except TimeoutException as error:
                 # self.signals.error.emit(error)
                 status = f"\U0000274C {error}"
@@ -143,12 +142,21 @@ class SendMessageWorker(QRunnable):
             else:
                 logger.info(message)
                 message_box.send_keys(message)
-                time.sleep(0.2)
+                self.kwargs["progress_bar"].emit(row + 7 * step)
+                time.sleep(0.3)
                 message_box.send_keys(Keys.ENTER)
+                self.kwargs["progress_bar"].emit(row + 8 * step)
                 time.sleep(3)
+                self.timer(
+                    value=row,
+                    step=step,
+                    start=9,
+                    time_wait=3
+                )
             finally:
                 self.signals.result.emit((row, status))
             self.status.append(status)
+
         else:
             self.signals.finished.emit()
             time.sleep(3)

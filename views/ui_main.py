@@ -443,7 +443,7 @@ class Ui_MainWindow(object):
         self.stop_button.setText("")
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">Mensajes enviados</span></p></body></html>", None))
         self.restar_button.setText(QCoreApplication.translate("MainWindow", u"Descargar informe", None))
-        self.close_button.setText(QCoreApplication.translate("MainWindow", u"Nueva consulta", None))
+        self.close_button.setText(QCoreApplication.translate("MainWindow", u"Nuevo env\u00edo", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:18pt; color:#dff3ed;\">!Ha ocurrido un error!</span></p></body></html>", None))
     # retranslateUi
 
